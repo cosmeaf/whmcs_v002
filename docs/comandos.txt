@@ -1,0 +1,1 @@
+cat /etc/passwd | cut -d: -f1 | grep ^user | xargs -I {} sudo userdel -rf {}
