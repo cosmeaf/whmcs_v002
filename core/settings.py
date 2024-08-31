@@ -5,7 +5,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Caminho para o arquivo de log
-LOG_FILE_PATH = BASE_DIR / 'logs' / 'django.log'
+LOG_FILE_PATH = '/var/log/django/django.log'
+# tail -f /var/log/django/django.log /var/log/django/debug.log 
 
 # Criação do diretório de logs caso não exista
 os.makedirs(os.path.dirname(LOG_FILE_PATH), exist_ok=True)
@@ -115,40 +116,62 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
+
 # Configuração de logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
-        'verbose': {
-            'format': '{asctime} - {levelname} - {name} - {message}',
-            'style': '{',
+        'default': {
+            'format': '%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
         },
     },
     'handlers': {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': LOG_FILE_PATH,
-            'formatter': 'verbose',
+            'filename': '/var/log/django/django.log',
+            'formatter': 'default',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['file'],
+        '': {  # root logger
+            'handlers': ['file', 'console'],
             'level': 'INFO',
-            'propagate': True,
         },
-        'linux_manager': {
-            'handlers': ['file'],
+        'django': {
+            'handlers': ['file', 'console'],
             'level': 'INFO',
-            'propagate': True,
+            'propagate': False,
+        },
+        '__name__': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }

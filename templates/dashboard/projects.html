@@ -107,18 +107,17 @@
 </div>
 
 <!-- Inclusão dos arquivos JavaScript -->
-<script src="{% static 'linux/js/tooltip.js' %}"></script>
 <script src="{% static 'linux/js/upload.js' %}"></script>
 <script src="{% static 'linux/js/unzip.js' %}"></script>
 <script src="{% static 'linux/js/delete.js' %}"></script>
 <script src="{% static 'linux/js/select.js' %}"></script>
-<script src="{% static 'linux/js/alert.js' %}"></script>
+<script src="{% static 'linux/js/alert.js' %}"></script> <!-- Alerta customizado -->
 
 <script>
     const csrfToken = '{{ csrf_token }}';
     const uploadProjectUrl = "{% url 'upload_project' %}";
     const unzipFileUrl = "{% url 'unzip_file' %}";
-    const deleteFilesUrl = "{% url 'delete_file' %}"
+    const deleteFilesUrl = "{% url 'delete_file' %}";
 
     function toggleActionButtons() {
         const deleteButton = document.getElementById('deleteSelected');
@@ -138,6 +137,48 @@
                 unzipFile(filePath); 
             }
         });
+    }
+
+    function deleteSelectedFiles() {
+        const selectedFiles = [];
+        document.querySelectorAll('.fileCheckbox:checked').forEach(checkbox => {
+            const filePath = checkbox.getAttribute('data-path');
+            selectedFiles.push(filePath);
+        });
+
+        if (selectedFiles.length > 0) {
+            if (confirm('Tem certeza de que deseja excluir os arquivos selecionados?')) {
+                fetch(deleteFilesUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ 'paths': selectedFiles })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('Arquivos deletados com sucesso!', 'success');
+                        window.location.reload();
+                    } else {
+                        showAlert('Falha ao deletar: ' + data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Erro: ' + error, 'danger');
+                    console.error('Error:', error);
+                });
+            }
+        } else {
+            showAlert('Nenhum arquivo selecionado para exclusão.', 'warning');
+        }
+    }
+
+    function showAlert(message, type) {
+        const alertModalBody = document.getElementById('alertModalBody');
+        alertModalBody.textContent = message;
+        $('#alertModal').modal('show');
     }
 </script>
 

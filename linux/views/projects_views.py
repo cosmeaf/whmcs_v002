@@ -94,18 +94,17 @@ def upload_project(request):
     if request.method == 'POST' and request.FILES['file']:
         user_home = os.path.expanduser(f"~{request.user.username}")
         upload_file = request.FILES['file']
-        
         if not os.path.exists(user_home):
             os.makedirs(user_home)
-        
-        # Salvar o arquivo no diretório home do usuário
         file_path = os.path.join(user_home, upload_file.name)
         with open(file_path, 'wb+') as destination:
             for chunk in upload_file.chunks():
                 destination.write(chunk)
-        
+        uid = pwd.getpwnam(request.user.username).pw_uid
+        gid = grp.getgrnam(request.user.username).gr_gid
+        os.chown(file_path, uid, gid)
+        os.chmod(file_path, 0o644)
         return JsonResponse({'status': 'success'})
-    
     return JsonResponse({'status': 'failed', 'message': 'No file uploaded'})
 
 
@@ -114,19 +113,13 @@ def upload_project(request):
 def save_file_content(request):
     if request.method == 'POST':
         try:
-            # Recebendo o caminho e o conteúdo do arquivo
             file_path = os.path.join(os.path.expanduser(f"~{request.user.username}"), request.POST.get('path'))
             content = request.POST.get('content')
-
-            # Escrevendo o novo conteúdo no arquivo
             with open(file_path, 'w') as file:
                 file.write(content)
-
             return JsonResponse({'status': 'success'})
-
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)})
-    
     return JsonResponse({'status': 'failed', 'message': 'Invalid request method'})
 
 
@@ -200,47 +193,60 @@ def unzip_file(request):
         return JsonResponse({'status': 'error', 'message': str(e)})
 
 
-
-import os
-import subprocess
-import json
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
-
 @login_required
-@csrf_exempt
+@require_POST
 def delete_file(request):
-    if request.method == 'POST':
-        try:
-            # Carregar o JSON do corpo da requisição
-            data = json.loads(request.body)
-            paths = data.get('path') or data.get('paths')
-
-            if not paths:
-                return JsonResponse({'status': 'error', 'message': 'Nenhum arquivo especificado'})
-
-            # Verificar se paths é uma lista (múltiplos arquivos) ou uma string (um único arquivo)
-            if isinstance(paths, str):
-                paths = [paths]  # Transformar em lista para processamento uniforme
-
-            # Caminho completo dos arquivos na pasta home do usuário
-            user_home = os.path.expanduser(f"~{request.user.username}")
-            for filename in paths:
-                file_path = os.path.join(user_home, filename)
-
-                # Verificar se o arquivo existe
-                if not os.path.exists(file_path):
-                    return JsonResponse({'status': 'error', 'message': f'Arquivo não encontrado: {filename}'})
-
-                # Remover o arquivo com sudo
-                subprocess.run(['sudo', 'rm', '-f', file_path], check=True)
-
-            return JsonResponse({'status': 'success'})
-
-        except subprocess.CalledProcessError as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
+    # Define o caminho base fixo para o diretório home do usuário logado
+    user_home = f"/home/{request.user.username}"
+    logger.info(f"Log 1: Caminho base do usuário: {user_home}")
     
-    return JsonResponse({'status': 'failed', 'message': 'Método de requisição inválido'})
+    # Obtém os caminhos dos arquivos enviados via POST no corpo da requisição JSON
+    try:
+        data = json.loads(request.body)
+        paths = data.get('paths', [])
+    except json.JSONDecodeError:
+        logger.error("Erro ao decodificar JSON recebido.")
+        return JsonResponse({'success': False, 'message': 'Erro ao processar a solicitação. JSON inválido.'})
+
+    logger.info(f"Log 2: Arquivos recebidos via POST: {paths}")
+    errors = []
+    logger.info(f"Usuário {request.user.username} iniciou o processo de exclusão.")
+    
+    for path in paths:
+        # Constrói o caminho completo do arquivo/diretório com base no nome recebido
+        full_path = os.path.join(user_home, path.lstrip('/'))
+        logger.info(f"Log 3: Processando o caminho para exclusão: {full_path}")      
+        if os.path.basename(full_path).startswith('.'):
+            logger.info(f"Ignorando {full_path}: Arquivo ou diretório oculto ou essencial.")
+            errors.append(f"Ignorado: {path} (Arquivo oculto ou essencial)")
+            continue      
+        if os.path.exists(full_path):
+            logger.info(f"Log 4: {full_path} existe e será processado para exclusão.")
+            try:
+                if os.path.isdir(full_path):
+                    logger.info(f"Log 5: {full_path} é um diretório.")
+                    # Caminho do link simbólico relacionado ao diretório
+                    link_path = f"/var/www/members/{os.path.basename(full_path)}"
+                    if os.path.islink(link_path):
+                        logger.info(f"Log 6: Removendo link simbólico {link_path}.")
+                        os.unlink(link_path)                  
+                    logger.info(f"Log 7: Tentando remover o diretório {full_path}.")
+                    result = subprocess.run(['sudo', 'rm', '-rf', full_path], check=True)
+                    logger.info(f"Log 8: Remoção do diretório {full_path} concluída com status: {result.returncode}")              
+                elif os.path.isfile(full_path) or os.path.islink(full_path):
+                    logger.info(f"Log 5: {full_path} é um arquivo ou link simbólico.")
+                    logger.info(f"Log 7: Tentando remover o arquivo/link {full_path}.")
+                    result = subprocess.run(['sudo', 'rm', '-f', full_path], check=True)
+                    logger.info(f"Log 8: Remoção do arquivo/link {full_path} concluída com status: {result.returncode}")          
+            except Exception as e:
+                logger.error(f"Erro ao excluir {full_path}: {str(e)}")
+                errors.append(f"Erro ao excluir {path}: {str(e)}")
+        else:
+            logger.info(f"Log 4: {full_path} não encontrado.")
+            errors.append(f"{path} não encontrado.")   
+    if errors:
+        logger.info(f"Processo de exclusão concluído com erros: {' '.join(errors)}")
+        return JsonResponse({'success': False, 'message': ' '.join(errors)})
+    else:
+        logger.info("Processo de exclusão concluído com sucesso.")
+        return JsonResponse({'success': True})
