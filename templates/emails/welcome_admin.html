@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao Sistema</title>
+
+    <!-- Estilos internos para manter o e-mail compatível -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px;
+            background-color: #1a1a1a;
+        }
+        .header img {
+            max-width: 200px;
+        }
+        .content {
+            margin-top: 20px;
+        }
+        .content h2 {
+            color: #ffffff;
+            text-align: center;
+        }
+        .content p {
+            color: #cccccc;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #6a0dad;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background-color: #4b0082;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333333;
+            color: #aaaaaa;
+            font-size: 12px;
+            border-radius: 0 0 8px 8px;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .social-media {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .social-media a {
+            margin: 0 10px;
+            color: #6a0dad;
+            text-decoration: none;
+        }
+        .social-media a:hover {
+            color: #4b0082;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://framerusercontent.com/images/TG6WAjlT9X9sEq6evGgBkyhOYk.png" alt="Logo">
+        </div>
+        <div class="content">
+            <h2>Bem-vindo ao Sistema</h2>
+            <p>Olá {{ first_name }} {{ last_name }},</p>
+            <p>Seja bem-vindo ao nosso sistema! Abaixo estão suas credenciais de acesso:</p>
+            <p><strong>Usuário:</strong> {{ username }}</p>
+            <p><strong>Email:</strong> {{ email }}</p>
+            <p><strong>Senha:</strong> {{ password }}</p>
+            <p>Você pode acessar a plataforma através do link abaixo:</p>
+            <a href="https://legendarios.io/" class="btn">Acessar a Plataforma</a>
+            <p style="text-align: center; font-size: 12px; color: #888888;">Este é um e-mail automático. Por favor, não responda.</p>
+        </div>
+        <div class="footer">
+            <p><strong>Contato:</strong> +55 (31) 3157-0760 | <a href="https://api.whatsapp.com/send?phone=553131570760" style="color: #6a0dad; text-decoration: none;">Whatsapp</a></p>
+            <p><strong>Website:</strong> <a href="https://projetodesenvolve.com.br" style="color: #6a0dad; text-decoration: none;">projetodesenvolve_br</a></p>
+            <p>Rua Tomé de Souza, 810, Cj 401, Savassi, Belo Horizonte/MG - CEP: 30.140-135.</p>
+            <p>PROSPERARE EDUCAÇÃO, CULTURA E CIDADANIA S.A - CNPJ nº 10.976.971/0001-25</p>
+            <p>Todos os direitos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>
