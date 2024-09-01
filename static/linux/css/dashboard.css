@@ -1,0 +1,139 @@
+/* Global Styles */
+body {
+  font-family: 'Helvetica Neue', sans-serif;
+  background-color: #1a1a1a; /* Preto fosco */
+  color: #ffffff; /* Texto branco */
+}
+
+/* Button Styles */
+.btn-purple {
+  background-color: #6a0dad; /* Roxo */
+  color: white;
+  border-radius: 5px;
+  box-shadow: 0px 4px 6px rgba(106, 13, 173, 0.5);
+}
+
+.btn-purple:hover {
+  background-color: #8a2be2; /* Roxo mais claro ao hover */
+}
+
+.border-purple {
+  border-color: #6a0dad;
+}
+
+/* Sidebar Styles */
+aside.bg-dark {
+  background: linear-gradient(180deg, #1a1a1a, #2b2b2b); /* Preto fosco para um tom um pouco mais claro */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Sombra mais forte */
+}
+
+.nav-link {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #ffffff;
+  transition: background-color 0.3s ease, padding-left 0.3s ease;
+}
+
+.nav-link i {
+  margin-right: 8px;
+}
+
+.nav-link:hover {
+  background-color: rgba(106, 13, 173, 0.2); /* Leve fundo roxo ao hover */
+  padding-left: 30px;
+  border-left: 4px solid #6a0dad; /* Bordas roxas ao hover */
+}
+
+.nav-link.active {
+  background-color: #6a0dad; /* Fundo roxo para item ativo */
+  border-left: 4px solid #ffffff;
+}
+
+.nav-link.active i {
+  color: #ffffff;
+}
+
+aside .text-white {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+aside img {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Sombra mais intensa na logo */
+}
+
+aside .nav-link {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+aside .nav-link:last-child {
+  border-bottom: none;
+}
+
+/* Footer text */
+aside .text-center {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* Card Styles */
+.card {
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.2); /* Sombra mais acentuada */
+  background-color: #2b2b2b; /* Preto fosco */
+  cursor: pointer; /* Mãozinha ao passar o mouse */
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.4); /* Sombra ainda mais acentuada no hover */
+}
+
+/* Adjusting Background Colors with Gradients */
+.bg-success {
+  background: linear-gradient(135deg, #6a0dad, #8a2be2) !important; /* Degradê de roxo */
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #9c27b0, #ba68c8) !important; /* Degradê de roxo mais claro */
+}
+
+.bg-danger {
+  background: linear-gradient(135deg, #d32f2f, #ff5e62) !important; /* Vermelho e roxo */
+}
+
+/* Cor padrão */
+.bg-dark {
+  background: linear-gradient(135deg, #2b2b2b, #3a3a3a) !important; /* Preto fosco com leve variação */
+}
+
+/* Footer Styles */
+footer {
+  background-color: #1a1a1a; /* Preto fosco */
+  padding: 20px;
+  text-align: center;
+  color: #ffffff;
+  border-top: 1px solid #6a0dad;
+}
+
+footer a {
+  color: #6a0dad;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Link hover effect */
+a.hover-text-white:hover {
+  color: #ffffff !important; /* Assegura que o texto permaneça branco no hover */
+  text-decoration: underline; /* Adiciona sublinhado para melhor acessibilidade visual */
+}
+
+/* Cursor pointer para links clicáveis */
+.table-row:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1); /* Leve destaque na linha ao passar o mouse */
+}

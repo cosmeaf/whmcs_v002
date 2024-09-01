@@ -1,0 +1,80 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="content">
+    <h1>Gerar Usuários</h1>
+
+    <!-- Formulário para adicionar manualmente -->
+    <h2>Adicionar Usuário Manualmente</h2>
+    <form method="post" action="{% url 'admin:adicionar_manual' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nome_completo">Nome Completo:</label>
+            <input type="text" name="nome_completo" id="nome_completo" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Gerar e Adicionar</button>
+    </form>
+
+    <!-- Upload de Planilha -->
+    <h2>Upload de Planilha</h2>
+    <form method="post" enctype="multipart/form-data" action="{% url 'admin:upload_planilha' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="excel_file">Selecione o arquivo Excel:</label>
+            <input type="file" name="excel_file" id="excel_file" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+
+    <!-- Tabela Dinâmica com Usuários Gerados -->
+    {% if generated_users %}
+    <h2>Usuários Gerados</h2>
+    <table class="table table-striped" id="user-table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in generated_users %}
+            <tr>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.password }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form method="get" action="{% url 'admin:exportar_usuarios' %}">
+        <button type="submit" class="btn btn-secondary">Exportar para CSV</button>
+    </form>
+    {% endif %}
+</div>
+
+<style>
+    .table {
+        width: 100%;
+        margin-top: 20px;
+    }
+    .table th, .table td {
+        padding: 10px;
+        text-align: left;
+    }
+</style>
+
+<script>
+    // Exemplo de funcionalidade dinâmica com JavaScript
+</script>
+
+{% endblock %}

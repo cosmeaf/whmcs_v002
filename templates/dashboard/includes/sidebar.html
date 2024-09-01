@@ -1,7 +1,26 @@
-<aside class="bg-dark position-fixed h-100 border-right border-purple" style="width: 200px;">
-  <nav class="nav flex-column pt-5">
-      <a class="nav-link text-white" href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Home</a>
-      <a class="nav-link text-white" href="{% url 'projects' %}"><i class="fas fa-folder-open"></i> Projects</a>
-      <a class="nav-link text-white" href="#"><i class="fas fa-cogs"></i> Settings</a>
+{% load static %}
+<aside class="bg-dark position-fixed h-100 border-right border-purple d-flex flex-column" style="width: 200px;">
+  <div class="d-flex flex-column align-items-center pt-4 mb-5">
+      <img src="https://framerusercontent.com/images/RXb577d3S6wdAX4yZvwG5ITj3Gc.png" alt="Logo" style="width: 150px;">
+  </div>
+  <nav class="nav flex-column mt-4">
+      <a class="nav-link text-white" href="{% url 'dashboard' %}">
+          <i class="fas fa-home"></i> <span class="ml-2">Home</span>
+      </a>
+      <a class="nav-link text-white" href="{% url 'projects' %}">
+          <i class="fas fa-folder-open"></i> <span class="ml-2">Projects</span>
+      </a>
+      <a class="nav-link text-white" href="#">
+          <i class="fas fa-cogs"></i> <span class="ml-2">Settings</span>
+      </a>
+      <a class="nav-link text-white mt-3" href="{% url 'logout' %}">
+          <i class="fas fa-sign-out-alt"></i> <span class="ml-2">Logout</span>
+      </a>
   </nav>
+  <div class="mt-auto">
+      <div class="text-center text-white pb-4">
+          <p>© 2024 Projeto</p>
+          <a href="#">Desenvolve</a>
+      </div>
+  </div>
 </aside>
