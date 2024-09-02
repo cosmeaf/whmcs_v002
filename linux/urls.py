@@ -1,11 +1,13 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views.auth_views import user_login
+from .views.home_view import home_view
 from .views.dashboard_views import dashboard, user_logout
 from .views.projects_views import projects, project_detail, upload_to_home, save_file_content, unzip_file, delete_file
 
 urlpatterns = [
-    path('', user_login, name='login'),
+    path('', home_view, name='home'),
+    path('login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
     path('dashboard/', dashboard, name='dashboard'),
     path('dashboard/projects/', projects, name='projects'),

@@ -83,7 +83,7 @@ def send_email_to_users(modeladmin, request, queryset):
 
 
 class CustomUserReport(admin.ModelAdmin):
-    list_display = ('username', 'email', 'is_staff')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
     search_fields = ('username', 'email')
     actions = [export_users_csv, export_users_xlsx, export_users_pdf, send_email_to_users]
 
