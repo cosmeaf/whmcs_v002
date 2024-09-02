@@ -3,179 +3,137 @@
 {% block title %}Projetos do Usuário{% endblock %}
 
 {% block content %}
-    {% include 'dashboard/includes/header.html' %} <!-- Incluindo o header -->
+    {% include 'dashboard/includes/header.html' %}
+    {% include 'dashboard/modals/upload_project.html' %} 
 
-    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-        <h1 class="h3"><i class="fas fa-folder-open"></i> Projetos</h1>
-        <div>
-            <button id="unzipSelected" type="button" class="btn btn-sm btn-success" style="display: none;" onclick="unzipSelectedFiles()">
-                <i class="fas fa-file-archive"></i> Descompactar
-            </button>
-            <button id="deleteSelected" type="button" class="btn btn-sm btn-danger" style="display: none;" onclick="deleteSelectedFiles()">
-                <i class="fas fa-trash-alt"></i> Excluir
-            </button>
-            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#uploadModal" style="background-color: #6f42c1; border-color: #6f42c1;">
-                <i class="fas fa-plus-square"></i> Novo Projeto
-            </button>
+    <div class="container-fluid mb-4 mt-5">
+        <!-- Título e Botão Novo Projeto -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h3 mb-0 text-white"><i class="fas fa-folder-open"></i> Projetos</h3>
+            <div>
+                <!-- Botão para abrir o modal de upload -->
+                <button type="button" class="btn btn-purple" data-toggle="modal" data-target="#uploadModal">
+                    <i class="fas fa-plus-square"></i> Novo Projeto
+                </button>
+                <!-- Botões de Ação -->
+                <button id="unzipSelected" type="button" class="btn btn-success" style="display: none;">
+                    <i class="fas fa-file-archive"></i> Descompactar
+                </button>
+                <button id="deleteSelected" type="button" class="btn btn-danger" style="display: none;">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                </button>
+            </div>
         </div>
-    </div>
 
-    <div class="table-responsive">
-        <table class="table table-dark table-striped table-hover">
-            <thead class="thead-light">
-                <tr>
-                    <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
-                    <th>Nome</th>
-                    <th>Tipo</th>
-                    <th>Tamanho</th>
-                    <th>Permissões</th>
-                    <th>URL</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in files_and_folders %}
-                <tr class="table-row" style="cursor: pointer;">
-                    <td><input type="checkbox" class="fileCheckbox" data-path="{{ item.path }}" onclick="toggleActionButtons()"></td>
-                    <td>
-                        {% if item.type == 'Folder' %}
-                            <i class="fas fa-folder"></i>
-                            <a href="{% url 'project_detail' item.name %}" class="text-white hover-text-white">{{ item.name }}</a>
-                        {% else %}
-                            <i class="fas fa-file"></i>
-                            <span class="text-white">{{ item.name }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ item.type }}</td>
-                    <td>
-                        {% if item.size != '-' %}
-                            {{ item.size|filesizeformat }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    <td>{{ item.permissions }}</td>
-                    <td>
-                        {% if item.type == 'Folder' %}
-                            <a href="https://{{ item.name }}.{{ request.get_host }}" class="text-white" target="_blank">https://{{ item.name }}.{{ request.get_host }}</a>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Modal de Upload -->
-    <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="uploadModalLabel">Carregar Projeto</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="uploadForm">
-                        <div class="mb-3">
-                            <label for="formFile" class="form-label">Escolha um arquivo .zip</label>
-                            <input class="form-control" type="file" id="formFile" name="file" accept=".zip" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="background-color: #6f42c1; border-color: #6f42c1;">Carregar</button>
-                    </form>
+        <!-- Card contendo a Tabela -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-dark table-striped table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                                <th>Nome Projeto</th>
+                                <th>Tipo</th>
+                                <th>Tamanho</th>
+                                <th>Permissão</th>
+                                <th>Link Projeto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in files_and_folders %}
+                            <tr class="table-row">
+                                <td><input type="checkbox" class="fileCheckbox" data-path="{{ item.path }}" onclick="toggleActionButtons()"></td>
+                                <td>
+                                    {% if item.type == 'Folder' %}
+                                        <i class="fas fa-folder"></i>
+                                        <a href="{% url 'project_detail' item.name %}" class="text-white hover-text-white">{{ item.name }}</a>
+                                    {% else %}
+                                        {{ item.name }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.type == 'Folder' %}
+                                        Pasta
+                                    {% elif item.type == 'Image' %}
+                                        <i class="fas fa-file-image"></i> Imagem
+                                    {% elif item.type == 'CSS' %}
+                                        <i class="fab fa-css3-alt"></i> CSS
+                                    {% elif item.type == 'JS' %}
+                                        <i class="fab fa-js"></i> JavaScript
+                                    {% elif item.type == 'PDF' %}
+                                        <i class="fas fa-file-pdf"></i> PDF
+                                    {% elif item.type == 'Excel' %}
+                                        <i class="fas fa-file-excel"></i> Excel
+                                    {% elif item.type == 'HTML' %}
+                                        <i class="fab fa-html5"></i> HTML
+                                    {% elif item.type == 'ZIP' %}
+                                        <i class="fas fa-file-archive"></i> Arquivo ZIP
+                                    {% else %}
+                                        <i class="fas fa-file-alt"></i> Arquivo
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.size != '-' %}
+                                        {{ item.size|filesizeformat }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>{{ item.permissions }}</td>
+                                <td>
+                                    {% if item.type == 'Folder' %}
+                                    <a href="https://{{ item.name }}.{{ request.get_host }}" target="_blank" class="hover-text-white">
+                                        https://{{ item.name }}.{{ request.get_host }}
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
 
-    <!-- Alert Modal -->
-    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="alertModalLabel">Atenção</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="alertModalBody">
-                    <!-- Mensagem de alerta será inserida aqui -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+{% block scripts %}
     <script>
-        const csrfToken = '{{ csrf_token }}';
-        const uploadProjectUrl = "{% url 'upload_project' %}";
+        const uploadProjectUrl = "{% url 'upload_to_home' %}";
         const unzipFileUrl = "{% url 'unzip_file' %}";
-        const deleteFilesUrl = "{% url 'delete_file' %}";  <!-- Corrigi o nome aqui -->
-    
-        function toggleActionButtons() {
-            const deleteButton = document.getElementById('deleteSelected');
-            const unzipButton = document.getElementById('unzipSelected');
-            const checkboxes = document.querySelectorAll('.fileCheckbox:checked');
-            const hasZipFile = Array.from(checkboxes).some(checkbox => checkbox.getAttribute('data-path').endsWith('.zip'));
-    
-            deleteButton.style.display = checkboxes.length > 0 ? 'inline-block' : 'none';
-            unzipButton.style.display = hasZipFile ? 'inline-block' : 'none';
-        }
-    
-        function unzipSelectedFiles() {
-            const selectedFiles = [];
-            document.querySelectorAll('.fileCheckbox:checked').forEach(checkbox => {
-                const filePath = checkbox.getAttribute('data-path');
-                if (filePath.endsWith('.zip')) {
-                    unzipFile(filePath); 
-                }
-            });
-        }
-    
-        function deleteSelectedFiles() {
-            const selectedFiles = [];
-            document.querySelectorAll('.fileCheckbox:checked').forEach(checkbox => {
-                const filePath = checkbox.getAttribute('data-path');
-                selectedFiles.push(filePath);
-            });
-    
-            if (selectedFiles.length > 0) {
-                if (confirm('Tem certeza de que deseja excluir os arquivos selecionados?')) {
-                    fetch(deleteFilesUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrfToken
-                        },
-                        body: JSON.stringify({ 'paths': selectedFiles })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showAlert('Arquivos deletados com sucesso!', 'success');
-                            window.location.reload();
-                        } else {
-                            showAlert('Falha ao deletar: ' + data.message, 'danger');
-                        }
-                    })
-                    .catch(error => {
-                        showAlert('Erro: ' + error, 'danger');
-                        console.error('Error:', error);
-                    });
-                }
-            } else {
-                showAlert('Nenhum arquivo selecionado para exclusão.', 'warning');
+        const deleteFilesUrl = "{% url 'delete_file' %}";
+        const csrfToken = '{{ csrf_token }}';
+
+        function deleteFile(selectedFiles) {
+            if (!confirm('Tem certeza de que deseja excluir os arquivos selecionados?')) {
+                return;
             }
-        }
-    
-        function showAlert(message, type) {
-            const alertModalBody = document.getElementById('alertModalBody');
-            alertModalBody.textContent = message;
-            $('#alertModal').modal('show');
+
+            fetch(deleteFilesUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ paths: selectedFiles })
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Arquivos deletados com sucesso!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showAlert('Falha ao deletar: ' + data.message, 'danger');
+                }
+            }).catch(error => {
+                showAlert('Erro: ' + error, 'danger');
+                console.error('Error:', error);
+            });
         }
     </script>
-    
-
+    <script src="{% static 'linux/js/toggle.js' %}"></script>
+    <script src="{% static 'linux/js/upload.js' %}"></script>
+    <script src="{% static 'linux/js/unzip.js' %}"></script>
 {% endblock %}

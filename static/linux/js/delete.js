@@ -1,55 +1,34 @@
-document.addEventListener("DOMContentLoaded", function() {
-    function deleteFile(filePath) {
-        if (!filePath) {
-            showAlert('Caminho do arquivo inválido.', 'danger');
-            return;
-        }
+// static/linux/js/delete.js
 
-        if (confirm('Tem certeza de que deseja deletar este arquivo?')) {
-            fetch(deleteFileUrl, {  // Use a URL gerada dinamicamente
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken
-                },
-                body: JSON.stringify({ 'paths': [filePath] })
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json(); 
-            })
-            .then(data => {
-                if (data.success) {
-                    showAlert('Arquivo deletado com sucesso!', 'success');
+function deleteFiles(selectedFiles) {
+    if (selectedFiles.length === 0) {
+        showAlert('Nenhum arquivo selecionado para exclusão.', 'warning');
+        return;
+    }
+
+    if (confirm('Tem certeza de que deseja excluir os arquivos selecionados?')) {
+        fetch(deleteFilesUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({ 'paths': selectedFiles })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Arquivos deletados com sucesso!', 'success');
+                setTimeout(() => {
                     window.location.reload();
-                } else {
-                    showAlert('Falha ao deletar: ' + data.message, 'danger');
-                }
-            })
-            .catch(error => {
-                showAlert('Erro: ' + error, 'danger');
-                console.error('Error:', error);
-            });
-        }
-    }
-
-    function deleteSelectedFiles() {
-        const selectedFiles = [];
-        document.querySelectorAll('.fileCheckbox:checked').forEach(checkbox => {
-            const filePath = checkbox.getAttribute('data-path');
-            selectedFiles.push(filePath);
+                }, 2000);
+            } else {
+                showAlert('Falha ao deletar: ' + data.message, 'danger');
+            }
+        })
+        .catch(error => {
+            showAlert('Erro: ' + error, 'danger');
+            console.error('Error:', error);
         });
-
-        if (selectedFiles.length > 0) {
-            selectedFiles.forEach(file => deleteFile(file));
-        } else {
-            showAlert("Nenhum arquivo selecionado para exclusão.", 'warning');
-        }
     }
-
-    function showAlert(message, type) {
-        alert(`${type.toUpperCase()}: ${message}`);
-    }
-
-    document.getElementById('deleteSelected').onclick = deleteSelectedFiles;
-});
+}

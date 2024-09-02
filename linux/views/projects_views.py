@@ -59,12 +59,15 @@ def projects(request):
 
 @login_required
 def project_detail(request, name_project):
+    # Diretório home do usuário logado
     user_home = os.path.expanduser(f"~{request.user.username}")
     project_path = os.path.join(user_home, name_project)
     
+    # Verifica se o caminho do projeto existe
     if not os.path.exists(project_path):
-        return HttpResponse("Project not found", status=404)
+        return HttpResponse("Projeto não encontrado", status=404)
 
+    # Lista os arquivos e pastas dentro do projeto
     files_and_folders = []
     for item in os.listdir(project_path):
         item_path = os.path.join(project_path, item)
@@ -75,12 +78,13 @@ def project_detail(request, name_project):
         files_and_folders.append({
             'name': item,
             'type': 'Folder' if os.path.isdir(item_path) else 'File',
-            'size': stats.st_size if os.path.isfile(item_path) else '-',  # Corrigir cálculo de tamanho
+            'size': stats.st_size if os.path.isfile(item_path) else '-',
             'permissions': permission_str,
             'path': os.path.relpath(item_path, user_home),
             'is_file': os.path.isfile(item_path)
         })
 
+    # Prepara o contexto para renderizar a página
     context = {
         'files_and_folders': files_and_folders,
         'current_project': name_project,
@@ -90,22 +94,30 @@ def project_detail(request, name_project):
 
 @login_required
 @csrf_exempt
-def upload_project(request):
-    if request.method == 'POST' and request.FILES['file']:
+@require_POST
+def upload_to_home(request):
+    if request.method == 'POST' and request.FILES.get('file'):
         user_home = os.path.expanduser(f"~{request.user.username}")
         upload_file = request.FILES['file']
+
+        # Salvar o arquivo no diretório /home/username/
         if not os.path.exists(user_home):
             os.makedirs(user_home)
+
         file_path = os.path.join(user_home, upload_file.name)
         with open(file_path, 'wb+') as destination:
             for chunk in upload_file.chunks():
                 destination.write(chunk)
+
+        # Ajustar permissões para o arquivo
         uid = pwd.getpwnam(request.user.username).pw_uid
         gid = grp.getgrnam(request.user.username).gr_gid
         os.chown(file_path, uid, gid)
         os.chmod(file_path, 0o644)
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'failed', 'message': 'No file uploaded'})
+
+        return JsonResponse({'status': 'success', 'message': 'Arquivo carregado e permissões ajustadas com sucesso!'})
+    
+    return JsonResponse({'status': 'failed', 'message': 'Nenhum arquivo foi enviado.'})
 
 
 @login_required
@@ -130,28 +142,19 @@ def save_file_content(request):
 def unzip_file(request):
     try:
         # Carrega o JSON do corpo da requisição
-        logger.debug(f"Request body: {request.body}")
         data = json.loads(request.body)
-        logger.debug(f"Parsed data: {data}")
-
         zip_filename = data.get('path')
-        logger.debug(f"Zip filename: {zip_filename}")
 
         if not zip_filename:
-            logger.error("Invalid file path")
             return JsonResponse({'status': 'error', 'message': 'Invalid file path'})
 
         # Diretório home do usuário logado
         user_home = f"/home/{request.user.username}"
-
-        # Caminho completo do arquivo .zip
         zip_path = os.path.join(user_home, zip_filename)
 
-        # Verificar se o arquivo existe
         if not os.path.exists(zip_path):
             return JsonResponse({'status': 'error', 'message': 'File not found'})
 
-        # Verificar se o arquivo é um .zip válido
         if not zipfile.is_zipfile(zip_path):
             return JsonResponse({'status': 'error', 'message': 'The file is not a valid .zip archive'})
 
@@ -159,38 +162,42 @@ def unzip_file(request):
         extract_folder_name = os.path.splitext(os.path.basename(zip_filename))[0]
         extract_path = os.path.join(user_home, extract_folder_name)
 
-        # Criar o diretório de extração se ele não existir
-        if not os.path.exists(extract_path):
-            os.makedirs(extract_path)
+        # Se a pasta já existir, vamos removê-la para evitar duplicados
+        if os.path.exists(extract_path):
+            subprocess.run(['rm', '-rf', extract_path])
 
-        # Extraindo o arquivo para a pasta de destino, evitando diretórios duplicados
+        # Criar o diretório de extração
+        os.makedirs(extract_path)
+
+        # Extraindo o arquivo diretamente para a pasta de destino
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             for member in zip_ref.namelist():
-                # Extrair apenas o conteúdo sem criar um diretório raiz duplicado
                 member_path = os.path.join(extract_path, os.path.basename(member))
                 if not os.path.isdir(member_path):
                     with zip_ref.open(member) as source, open(member_path, 'wb') as target:
                         target.write(source.read())
 
         # Ajustar permissões - dentro do diretório do usuário logado
+        subprocess.run(['chmod', '755', f'/home/{request.user.username}'])
+        subprocess.run(['chmod', '755', extract_path])
+        subprocess.run(['chmod', '-R', '644', f'{extract_path}/*'])
         subprocess.run(['sudo', 'chown', '-R', f'{request.user.username}:{request.user.username}', extract_path])
-        subprocess.run(['sudo', 'chmod', '-R', '755', extract_path])
 
-        # Criar um link simbólico no diretório /var/www/members/
+        # Criar link simbólico em /var/www/members/
         link_path = f"/var/www/members/{extract_folder_name}"
         if not os.path.exists(link_path):
-            subprocess.run(['sudo', 'ln', '-s', extract_path, link_path])
+            subprocess.run(['ln', '-s', extract_path, link_path])
 
-        # Ajustar as permissões e proprietário no diretório /var/www/
-        subprocess.run(['sudo', 'chown', '-R', 'www-data:www-data', '/var/www/'])
-        subprocess.run(['sudo', 'chown', '-R', 'www-data:www-data', '/var/www/members/'])
+        # Ajustar permissões de /var/www/members/
+        subprocess.run(['chown', '-R', 'www-data:www-data', '/var/www/members/'])
 
         return JsonResponse({'status': 'success'})
 
-    except json.JSONDecodeError:
-        return JsonResponse({'status': 'error', 'message': 'Invalid JSON format'})
     except Exception as e:
+        logger.error(f"Error unzipping file: {str(e)}")
         return JsonResponse({'status': 'error', 'message': str(e)})
+
+
 
 
 @login_required
