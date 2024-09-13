@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Validate OTP{% endblock %}
+{% block title %}{% trans "Validate OTP" %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow-purple rounded-3 p-4">
-            <h2 class="text-center mb-4">Validate OTP Code</h2>
+            <h2 class="text-center mb-4">{% trans "Validate OTP Code" %}</h2>
 
             <form method="POST">
                 {% csrf_token %}
-                
+
                 {% if form.non_field_errors %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ form.non_field_errors }}
@@ -19,8 +20,8 @@
                 {% endif %}
 
                 <div class="form-group">
-                    <label for="id_otp_code">OTP Code</label>
-                    <input type="text" name="otp_code" class="form-control form-control-sm {% if form.otp_code.errors %}is-invalid{% endif %}" id="id_otp_code" placeholder="Enter OTP code" value="{{ form.otp_code.value|default_if_none:'' }}">
+                    <label for="id_otp_code">{% trans "OTP Code" %}</label>
+                    <input type="text" name="otp_code" class="form-control form-control-sm {% if form.otp_code.errors %}is-invalid{% endif %}" id="id_otp_code" placeholder="{% trans 'Enter OTP code' %}" value="{{ form.otp_code.value|default_if_none:'' }}">
                     {% if form.otp_code.errors %}
                         <div class="invalid-feedback">
                             {{ form.otp_code.errors|striptags }}
@@ -29,7 +30,7 @@
                 </div>
 
                 <div class="text-center mt-3">
-                    <button type="submit" class="btn btn-purple">Validate OTP</button>
+                    <button type="submit" class="btn btn-purple">{% trans "Validate OTP" %}</button>
                 </div>
             </form>
         </div>

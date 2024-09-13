@@ -1,0 +1,319 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-09-13 14:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: linux/forms.py:61 linux/forms.py:63 templates/accounts/register.html:25
+#: templates/accounts/register.html:26 templates/auth/signup.html:41
+msgid "First Name"
+msgstr ""
+
+#: linux/forms.py:66 linux/forms.py:77 linux/forms.py:88 linux/forms.py:98
+msgid "This field is required."
+msgstr ""
+
+#: linux/forms.py:72 linux/forms.py:74 templates/accounts/register.html:34
+#: templates/accounts/register.html:35 templates/auth/signup.html:50
+msgid "Last Name"
+msgstr ""
+
+#: linux/forms.py:83 linux/forms.py:85 templates/accounts/login.html:24
+#: templates/accounts/register.html:46 templates/accounts/register.html:47
+#: templates/auth/signup.html:62
+msgid "Username"
+msgstr ""
+
+#: linux/forms.py:94 linux/forms.py:96 templates/accounts/register.html:55
+#: templates/accounts/register.html:56 templates/auth/signup.html:73
+msgid "Email"
+msgstr ""
+
+#: linux/forms.py:99
+msgid "Enter a valid email address."
+msgstr ""
+
+#: linux/forms.py:110
+msgid "This username is already taken."
+msgstr ""
+
+#: linux/forms.py:116
+msgid "This email is already registered."
+msgstr ""
+
+#: linux/views/auth_views.py:38
+msgid "Registration successful! You are now logged in."
+msgstr ""
+
+#: templates/accounts/login.html:5 templates/accounts/login.html:11
+#: templates/accounts/login.html:43
+#: templates/accounts/password_reset_complete.html:15
+#: templates/accounts/recovery.html:27 templates/accounts/recovery_done.html:16
+#: templates/accounts/register.html:90 templates/accounts/success.html:14
+#: templates/base.html:27
+msgid "Login"
+msgstr ""
+
+#: templates/accounts/login.html:16 templates/accounts/recovery.html:15
+#: templates/accounts/register.html:16
+msgid "Close"
+msgstr ""
+
+#: templates/accounts/login.html:25
+msgid "Enter username"
+msgstr ""
+
+#: templates/accounts/login.html:34 templates/accounts/register.html:67
+#: templates/accounts/register.html:68 templates/auth/signup.html:85
+msgid "Password"
+msgstr ""
+
+#: templates/accounts/login.html:35
+msgid "Enter password"
+msgstr ""
+
+#: templates/accounts/login.html:46 templates/accounts/register.html:89
+msgid "Forgot password?"
+msgstr ""
+
+#: templates/accounts/login.html:47 templates/accounts/recovery.html:28
+msgid "Create an account"
+msgstr ""
+
+#: templates/accounts/otp_validation.html:4
+#: templates/accounts/otp_validation.html:33
+msgid "Validate OTP"
+msgstr ""
+
+#: templates/accounts/otp_validation.html:10
+msgid "Validate OTP Code"
+msgstr ""
+
+#: templates/accounts/otp_validation.html:23
+msgid "OTP Code"
+msgstr ""
+
+#: templates/accounts/otp_validation.html:24
+msgid "Enter OTP code"
+msgstr ""
+
+#: templates/accounts/password_reset.html:4
+#: templates/accounts/password_reset.html:10
+#: templates/accounts/password_reset.html:15
+#: templates/accounts/password_reset_confirm.html:16
+msgid "Reset Password"
+msgstr ""
+
+#: templates/accounts/password_reset_complete.html:4
+#: templates/accounts/password_reset_complete.html:10
+#: templates/auth/password_reset_complete.html:6
+#: templates/auth/password_reset_complete.html:12
+msgid "Password Reset Complete"
+msgstr ""
+
+#: templates/accounts/password_reset_complete.html:12
+msgid ""
+"Your password has been successfully reset. You can now log in with your new "
+"password."
+msgstr ""
+
+#: templates/accounts/password_reset_confirm.html:5
+#: templates/auth/password_reset.html:6 templates/auth/password_reset.html:12
+msgid "Password Reset"
+msgstr ""
+
+#: templates/accounts/password_reset_confirm.html:11
+msgid "Reset Your Password"
+msgstr ""
+
+#: templates/accounts/password_reset_error.html:5
+msgid "Password Reset Error"
+msgstr ""
+
+#: templates/accounts/password_reset_error.html:11
+msgid "Error"
+msgstr ""
+
+#: templates/accounts/password_reset_error.html:13
+msgid ""
+"The link you are trying to access is expired or invalid. Please request a "
+"new password reset link."
+msgstr ""
+
+#: templates/accounts/password_reset_error.html:16
+msgid "Request New Link"
+msgstr ""
+
+#: templates/accounts/recovery.html:4
+msgid "Password Recovery"
+msgstr ""
+
+#: templates/accounts/recovery.html:10
+msgid "Recover Password"
+msgstr ""
+
+#: templates/accounts/recovery.html:22
+msgid "Send Recovery Email"
+msgstr ""
+
+#: templates/accounts/recovery_done.html:4
+msgid "Recovery Email Not Found"
+msgstr ""
+
+#: templates/accounts/recovery_done.html:10
+msgid "Email Not Found"
+msgstr ""
+
+#: templates/accounts/recovery_done.html:12
+msgid "The email address you entered is not registered. Please try again or"
+msgstr ""
+
+#: templates/accounts/recovery_done.html:13
+msgid "recover your password"
+msgstr ""
+
+#: templates/accounts/register.html:5 templates/accounts/register.html:11
+#: templates/accounts/register.html:86 templates/auth/signup.html:107
+#: templates/base.html:28
+msgid "Register"
+msgstr ""
+
+#: templates/accounts/register.html:76 templates/accounts/register.html:77
+#: templates/auth/signup.html:94
+msgid "Confirm Password"
+msgstr ""
+
+#: templates/accounts/success.html:4 templates/accounts/success.html:10
+msgid "Success"
+msgstr ""
+
+#: templates/accounts/success.html:11
+msgid "OTP code validated successfully. You can now proceed."
+msgstr ""
+
+#: templates/accounts/success.html:12
+msgid "Please check your email for further instructions."
+msgstr ""
+
+#: templates/auth/login.html:6 templates/auth/login.html:12
+#: templates/auth/login.html:21 templates/auth/signup.html:114
+msgid "Sign In"
+msgstr ""
+
+#: templates/auth/login.html:29
+msgid "Don't have an account?"
+msgstr ""
+
+#: templates/auth/login.html:31
+msgid "Sign up here"
+msgstr ""
+
+#: templates/auth/login.html:41
+msgid "Sign in with a passkey"
+msgstr ""
+
+#: templates/auth/login.html:46
+msgid "Mail me a sign-in code"
+msgstr ""
+
+#: templates/auth/password_reset.html:14
+msgid ""
+"Enter your email address below, and we'll send you an email to reset your "
+"password."
+msgstr ""
+
+#: templates/auth/password_reset.html:21
+msgid "Send Reset Link"
+msgstr ""
+
+#: templates/auth/password_reset_complete.html:14
+msgid "Your password has been set. You can now log in with your new password."
+msgstr ""
+
+#: templates/auth/password_reset_complete.html:17
+#: templates/auth/password_reset_done.html:17
+msgid "Return to Login"
+msgstr ""
+
+#: templates/auth/password_reset_confirm.html:6
+#: templates/auth/password_reset_confirm.html:12
+msgid "Enter New Password"
+msgstr ""
+
+#: templates/auth/password_reset_confirm.html:18
+msgid "Set New Password"
+msgstr ""
+
+#: templates/auth/password_reset_done.html:6
+#: templates/auth/password_reset_done.html:12
+msgid "Password Reset Sent"
+msgstr ""
+
+#: templates/auth/password_reset_done.html:14
+msgid ""
+"We've emailed you instructions for setting your password. You should receive "
+"it shortly."
+msgstr ""
+
+#: templates/auth/signup.html:7 templates/auth/signup.html:13
+msgid "Sign Up"
+msgstr ""
+
+#: templates/auth/signup.html:114
+msgid "Already have an account?"
+msgstr ""
+
+#: templates/auth/signup.html:115
+msgid "Forgot your password?"
+msgstr ""
+
+#: templates/auth/signup.html:115
+msgid "Recover it here"
+msgstr ""
+
+#: templates/base.html:8
+msgid "Dashboard"
+msgstr ""
+
+#: templates/base.html:18
+msgid "Logo"
+msgstr ""
+
+#: templates/base.html:24
+msgid "Member Area"
+msgstr ""
+
+#: templates/emails/password_reset_email.html:2
+msgid "Hello,"
+msgstr ""
+
+#: templates/emails/password_reset_email.html:3
+msgid ""
+"You're receiving this email because you requested a password reset for your "
+"user account."
+msgstr ""
+
+#: templates/emails/password_reset_email.html:4
+msgid "Please click the link below to reset your password:"
+msgstr ""
+
+#: templates/emails/password_reset_email.html:6
+msgid "If you did not request a password reset, please ignore this email."
+msgstr ""
+
+#: templates/emails/password_reset_email.html:7
+msgid "Thank you."
+msgstr ""

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     {% trans "Sign Up" %}
@@ -10,6 +12,7 @@
     <div class="card p-5" style="width: 100%; max-width: 450px; box-shadow: 0 0 20px rgba(106, 0, 173, 0.7); border: 1px solid #6a0dad; background-color: #2b2b2b;">
         <h2 class="mb-4 text-center text-white">{% trans "Sign Up" %}</h2>
 
+        <!-- Exibir erros de formulário -->
         {% if form.errors %}
         <div class="alert alert-danger">
             {% for field, errors in form.errors.items %}
@@ -20,6 +23,7 @@
         </div>
         {% endif %}
 
+        <!-- Exibir mensagens -->
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
@@ -28,10 +32,10 @@
         {% endfor %}
         {% endif %}
 
+        <!-- Formulário de registro -->
         <form method="POST" action="{% url 'register' %}">
             {% csrf_token %}
-
-            <!-- Row for first_name and last_name -->
+            <!-- Linha para nome e sobrenome -->
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="{{ form.first_name.id_for_label }}" class="text-white">{% trans "First Name" %}</label>
@@ -53,7 +57,7 @@
                 </div>
             </div>
 
-            <!-- Row for username -->
+            <!-- Linha para nome de usuário -->
             <div class="mb-3">
                 <label for="{{ form.username.id_for_label }}" class="text-white">{% trans "Username" %}</label>
                 {{ form.username }}
@@ -64,7 +68,7 @@
                 {% endif %}
             </div>
 
-            <!-- Row for email -->
+            <!-- Linha para email -->
             <div class="mb-3">
                 <label for="{{ form.email.id_for_label }}" class="text-white">{% trans "Email" %}</label>
                 {{ form.email }}
@@ -75,7 +79,7 @@
                 {% endif %}
             </div>
 
-            <!-- Row for password and repeat_password -->
+            <!-- Linha para senha e confirmação de senha -->
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="{{ form.password1.id_for_label }}" class="text-white">{% trans "Password" %}</label>
@@ -87,8 +91,7 @@
                     {% endif %}
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label for="{{ form.password2.id_for_label }}" class="text-white">
-                        {% trans "Confirm Password" %}</label>
+                    <label for="{{ form.password2.id_for_label }}" class="text-white">{% trans "Confirm Password" %}</label>
                     {{ form.password2 }}
                     {% if form.password2.errors %}
                     <div class="invalid-feedback d-block text-danger">
@@ -98,7 +101,7 @@
                 </div>
             </div>
 
-            <!-- Submit button -->
+            <!-- Botão de envio -->
             <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-purple btn-block text-white" style="background-color: #6a0dad; border-color: #6a0dad;">
                     <i class="fas fa-user-plus"></i> {% trans "Register" %}
@@ -106,10 +109,10 @@
             </div>
         </form>
 
+        <!-- Links para login e recuperação de senha -->
         <p class="mt-3 text-center text-white">
             {% trans "Already have an account?" %} <a href="{% url 'login' %}" class="text-purple">{% trans "Sign In" %}</a>.<br>
-            {% trans "Forgot your password?" %}
-            <a href="{% url 'password_reset' %}" class="text-purple">{% trans "Recover it here" %}</a>.
+            {% trans "Forgot your password?" %} <a href="{% url 'password_reset' %}" class="text-purple">{% trans "Recover it here" %}</a>.
         </p>
     </div>
 </div>

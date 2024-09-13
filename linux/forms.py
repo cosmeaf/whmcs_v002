@@ -2,11 +2,10 @@ import random
 from django import forms
 from django.utils import timezone
 from datetime import timedelta
-from django.core.mail import send_mail
-from django.conf import settings
 from linux.tasks import send_email_task
 from django.core.exceptions import ValidationError
 from django.utils.encoding import force_bytes 
+from django.utils.translation import gettext_lazy as _
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
@@ -55,50 +54,49 @@ class UserLoginForm(AuthenticationForm):
         return cleaned_data
 
 
-
 class UserRegisterForm(UserCreationForm):
     first_name = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'First Name'
+            'placeholder': _('First Name')  # Suporte à tradução
         }),
-        label='First Name',
+        label=_('First Name'),  # Suporte à tradução
         max_length=30,
         error_messages={
-            'required': 'This field is required.',
+            'required': _('This field is required.'),  # Suporte à tradução
         }
     )
     last_name = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'Last Name'
+            'placeholder': _('Last Name')  # Suporte à tradução
         }),
-        label='Last Name',
+        label=_('Last Name'),  # Suporte à tradução
         max_length=30,
         error_messages={
-            'required': 'This field is required.',
+            'required': _('This field is required.'),  # Suporte à tradução
         }
     )
     username = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'Username'
+            'placeholder': _('Username')  # Suporte à tradução
         }),
-        label='Username',
+        label=_('Username'),  # Suporte à tradução
         max_length=150,
         error_messages={
-            'required': 'This field is required.',
+            'required': _('This field is required.'),  # Suporte à tradução
         }
     )
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'Email'
+            'placeholder': _('Email')  # Suporte à tradução
         }),
-        label='Email',
+        label=_('Email'),  # Suporte à tradução
         error_messages={
-            'required': 'This field is required.',
-            'invalid': 'Enter a valid email address.',
+            'required': _('This field is required.'),  # Suporte à tradução
+            'invalid': _('Enter a valid email address.'),  # Suporte à tradução
         }
     )
 
@@ -109,13 +107,13 @@ class UserRegisterForm(UserCreationForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
-            raise forms.ValidationError('This username is already taken.')
+            raise forms.ValidationError(_('This username is already taken.'))  # Suporte à tradução
         return username
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('This email is already registered.')
+            raise forms.ValidationError(_('This email is already registered.'))  # Suporte à tradução
         return email
 
     def save(self, commit=True):
@@ -132,7 +130,6 @@ class UserRegisterForm(UserCreationForm):
             user.save()
         
         return user
-
 
 
 class UserRecoveryForm(forms.Form):
@@ -221,21 +218,21 @@ class PasswordResetConfirmForm(SetPasswordForm):
     new_password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'New Password'
+            'placeholder': _('New Password')
         }),
-        label='New Password',
+        label=_('New Password'),
         error_messages={
-            'required': 'This field is required.'
+            'required': _('This field is required.')
         }
     )
     new_password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control form-control-sm',
-            'placeholder': 'Confirm New Password'
+            'placeholder': _('Confirmar Senha')
         }),
-        label='Confirm New Password',
+        label=_('Confirmar Senha'),
         error_messages={
-            'required': 'This field is required.'
+            'required': _('This field is required.')
         }
     )
 
@@ -263,8 +260,9 @@ class PasswordResetConfirmForm(SetPasswordForm):
     def clean(self):
         cleaned_data = super().clean()
         if not self.user:
-            raise forms.ValidationError("Invalid reset link.")
+            raise forms.ValidationError(_("Invalid reset link."))
         return cleaned_data
+
 
 
 class UserProfileForm(forms.ModelForm):

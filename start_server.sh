@@ -4,7 +4,7 @@
 PROJECT_PATH="/opt/whmcs"
 LOG_DIR="/var/log/django"
 LOG_FILE="$LOG_DIR/django.log"
-CELERY_CMD="celery -A core worker -l info"
+CELERY_CMD="celery -A core worker -l info -n worker1@%h"
 DJANGO_CMD="python3 manage.py runserver 0.0.0.0:7000"
 
 # Função para criar o diretório de log e o arquivo de log se não existirem
@@ -32,7 +32,8 @@ log_message() {
 
 # Função para fazer a rotação dos logs a cada 30 dias
 rotate_logs() {
-    find "$LOG_DIR" -name "django.log*" -mtime +30 -exec rm {} \;
+    find "$LOG_DIR" -name "django.log*" -mtime +30 -exec gzip {} \;
+    find "$LOG_DIR" -name "django.log*.gz" -mtime +30 -exec rm {} \;
 }
 
 # Função para iniciar os serviços
@@ -56,16 +57,26 @@ start_server() {
 stop_server() {
     if [ -f "celery.pid" ]; then
         CELERY_PID=$(cat celery.pid)
-        log_message "INFO" "STOP" "33" "Parando Celery com PID $CELERY_PID..."
-        kill "$CELERY_PID" && rm -f celery.pid
+        if ps -p "$CELERY_PID" > /dev/null; then
+            log_message "INFO" "STOP" "33" "Parando Celery com PID $CELERY_PID..."
+            kill "$CELERY_PID" && rm -f celery.pid
+        else
+            log_message "WARNING" "STOP" "33" "Celery já está parado. Removendo o arquivo celery.pid."
+            rm -f celery.pid
+        fi
     else
         log_message "WARNING" "STOP" "33" "Arquivo celery.pid não encontrado. Celery pode já estar parado."
     fi
 
     if [ -f "django.pid" ]; then
         DJANGO_PID=$(cat django.pid)
-        log_message "INFO" "STOP" "33" "Parando Django com PID $DJANGO_PID..."
-        kill "$DJANGO_PID" && rm -f django.pid
+        if ps -p "$DJANGO_PID" > /dev/null; then
+            log_message "INFO" "STOP" "33" "Parando Django com PID $DJANGO_PID..."
+            kill "$DJANGO_PID" && rm -f django.pid
+        else
+            log_message "WARNING" "STOP" "33" "Django já está parado. Removendo o arquivo django.pid."
+            rm -f django.pid
+        fi
     else
         log_message "WARNING" "STOP" "33" "Arquivo django.pid não encontrado. Django pode já estar parado."
     fi
@@ -80,6 +91,7 @@ restart_server() {
 # Tratamento de erros
 error_handling() {
     log_message "ERROR" "SCRIPT" "31" "Erro ao executar $0. Saindo..."
+    echo "Erro crítico ao executar o script. Veja $LOG_FILE para mais detalhes."
     exit 1
 }
 

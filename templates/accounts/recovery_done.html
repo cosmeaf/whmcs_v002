@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
-{% block title %}Recovery Email Not Found{% endblock %}
+{% block title %}{% trans "Recovery Email Not Found" %}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
         <div class="card shadow-purple rounded-3 p-4">
-            <h2 class="text-center mb-4">Email Not Found</h2>
-            <p class="text-center">The email address you entered is not registered. Please try again or <a href="{% url 'recovery' %}">recover your password</a>.</p>
+            <h2 class="text-center mb-4">{% trans "Email Not Found" %}</h2>
+            <p class="text-center">
+                {% trans "The email address you entered is not registered. Please try again or" %} 
+                <a href="{% url 'recovery' %}">{% trans "recover your password" %}</a>.
+            </p>
             <div class="text-center mt-3">
-                <a href="{% url 'login' %}" class="btn btn-purple">Login</a>
+                <a href="{% url 'login' %}" class="btn btn-purple">{% trans "Login" %}</a>
             </div>
         </div>
     </div>
