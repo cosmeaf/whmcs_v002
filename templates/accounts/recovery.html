@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Password Recovery{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-purple rounded-3 p-4">
+            <h2 class="text-center mb-4">Recover Password</h2>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ form.non_field_errors }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-purple btn-block w-100">Send Recovery Email</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

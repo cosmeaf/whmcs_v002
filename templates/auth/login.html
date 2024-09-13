@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% trans "Sign In" %}
+{% endblock title %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-5" style="width: 100%; max-width: 450px; box-shadow: 0 0 20px rgba(106, 0, 173, 0.7); border: 1px solid #6a0dad; background-color: #2b2b2b;">
+        <h2 class="mb-4 text-center text-white">{% trans "Sign In" %}</h2>
+
+        {% if not SOCIALACCOUNT_ONLY %}
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-purple btn-block text-white" style="background-color: #6a0dad; border-color: #6a0dad;">
+                    {% trans "Sign In" %}
+                </button>
+            </div>
+
+            {{ redirect_field }}
+        </form>
+
+        <p class="mt-3 text-center text-white">
+            {% trans "Don't have an account?" %}
+            <a href="{% url 'register' %}" class="text-purple">
+                {% trans "Sign up here" %}
+            </a>.
+        </p>
+        {% endif %}
+
+        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
+        <hr class="bg-white">
+        <div class="d-grid gap-2">
+            {% if PASSKEY_LOGIN_ENABLED %}
+            <button type="button" class="btn btn-outline-primary">
+                {% trans "Sign in with a passkey" %}
+            </button>
+            {% endif %}
+            {% if LOGIN_BY_CODE_ENABLED %}
+            <a href="{{ request_login_code_url }}" class="btn btn-outline-primary">
+                {% trans "Mail me a sign-in code" %}
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if SOCIALACCOUNT_ENABLED %}
+        <hr class="bg-white">
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

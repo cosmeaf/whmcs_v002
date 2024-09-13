@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-purple rounded-3 p-4">
+            <h2 class="text-center mb-4">Register</h2>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ form.non_field_errors }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_first_name">First Name</label>
+                        <input type="text" name="first_name" class="form-control form-control-sm {% if form.first_name.errors %}is-invalid{% endif %}" id="id_first_name" placeholder="First Name" value="{{ form.first_name.value|default_if_none:'' }}">
+                        {% if form.first_name.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.first_name.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_last_name">Last Name</label>
+                        <input type="text" name="last_name" class="form-control form-control-sm {% if form.last_name.errors %}is-invalid{% endif %}" id="id_last_name" placeholder="Last Name" value="{{ form.last_name.value|default_if_none:'' }}">
+                        {% if form.last_name.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.last_name.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_username">Username</label>
+                        <input type="text" name="username" class="form-control form-control-sm {% if form.username.errors %}is-invalid{% endif %}" id="id_username" placeholder="Username" value="{{ form.username.value|default_if_none:'' }}">
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_email">Email</label>
+                        <input type="email" name="email" class="form-control form-control-sm {% if form.email.errors %}is-invalid{% endif %}" id="id_email" placeholder="Email" value="{{ form.email.value|default_if_none:'' }}">
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.email.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_password1">Password</label>
+                        <input type="password" name="password1" class="form-control form-control-sm {% if form.password1.errors %}is-invalid{% endif %}" id="id_password1" placeholder="Password">
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password1.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_password2">Confirm Password</label>
+                        <input type="password" name="password2" class="form-control form-control-sm {% if form.password2.errors %}is-invalid{% endif %}" id="id_password2" placeholder="Confirm Password">
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password2.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-purple btn-block w-100">Register</button>
+
+                <div class="text-center mt-3">
+                    <a href="{% url 'recovery' %}">Forgot password?</a> |
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

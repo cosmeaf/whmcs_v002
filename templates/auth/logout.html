@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-5 text-center" style="width: 100%; max-width: 450px; box-shadow: 0 0 20px rgba(106, 0, 173, 0.7); border: 1px solid #6a0dad; background-color: #2b2b2b;">
+        <h2 class="text-white mb-4">You have been logged out</h2>
+        <a href="/" class="btn btn-purple text-white" style="background-color: #6a0dad; border-color: #6a0dad;">
+            <i class="fas fa-home"></i> Go to Home
+        </a>
+    </div>
+</div>
+{% endblock %}

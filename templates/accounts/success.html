@@ -1,0 +1,19 @@
+<!-- success.html -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Success" %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-purple rounded-3 p-4">
+            <h2 class="text-center mb-4">{% trans "Success" %}</h2>
+            <p class="text-center">{% trans "OTP code validated successfully. You can now proceed." %}</p>
+            <p class="text-center">{% trans "Please check your email for further instructions." %}</p>
+            <div class="text-center mt-3">
+                <a href="{% url 'login' %}" class="btn btn-purple">{% trans "Login" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Perfil Profissional{% endblock %}
+
+{% block content %}
+{% include 'dashboard/includes/header.html' %}
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Card de Perfil com Foto -->
+            <div class="card text-center mb-4">
+                <div class="card-body">
+                    {% if user.userprofile.image %}
+                        <img src="{{ user.userprofile.image.url }}" alt="Foto do Perfil" class="rounded-circle img-fluid mb-3" width="150" height="150">
+                    {% else %}
+                        <img src="{% static 'images/profile.png' %}" alt="Imagem Padrão de Perfil" class="rounded-circle img-fluid mb-3" width="150" height="150">
+                    {% endif %}
+                    <h4 class="card-title">{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p class="text-muted">{{ user.userprofile.location }}</p>
+                </div>
+            </div>            
+        </div>
+        <div class="col-md-8">
+            <!-- Informações Pessoais e Profissionais -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Informações Pessoais</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Data de Nascimento:</strong> {{ user.userprofile.birth_date|date:"d/m/Y" }}</p>
+                    <p><strong>Localização:</strong> {{ user.userprofile.location }}</p>
+                    <p><strong>Bio:</strong> {{ user.userprofile.bio }}</p>
+                </div>
+            </div>
+
+            <!-- Redes Sociais e Website -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Redes Sociais e Website</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Website:</strong> <a href="{{ user.userprofile.website }}" target="_blank" class="hover-text-white">{{ user.userprofile.website }}</a></p>
+                    <p><strong>GitHub:</strong> <a href="{{ user.userprofile.github }}" target="_blank" class="hover-text-white">{{ user.userprofile.github }}</a></p>
+                    <p><strong>LinkedIn:</strong> <a href="{{ user.userprofile.linkedin }}" target="_blank" class="hover-text-white">{{ user.userprofile.linkedin }}</a></p>
+                    <p><strong>Twitter:</strong> <a href="{{ user.userprofile.twitter }}" target="_blank" class="hover-text-white">{{ user.userprofile.twitter }}</a></p>
+                </div>
+            </div>
+
+            <!-- Botão para Editar Perfil e Alterar Senha -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <a href="{% url 'edit_profile' %}" class="btn btn-purple mr-2">Editar Perfil</a>
+                    <a href="{% url 'change_password' %}" class="btn btn-purple">Alterar Senha</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
