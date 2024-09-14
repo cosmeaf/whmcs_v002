@@ -199,7 +199,6 @@ def unzip_file(request):
 
 
 
-
 @login_required
 @require_POST
 def delete_file(request):
@@ -230,21 +229,10 @@ def delete_file(request):
         if os.path.exists(full_path):
             logger.info(f"Log 4: {full_path} existe e será processado para exclusão.")
             try:
-                if os.path.isdir(full_path):
-                    logger.info(f"Log 5: {full_path} é um diretório.")
-                    # Caminho do link simbólico relacionado ao diretório
-                    link_path = f"/var/www/members/{os.path.basename(full_path)}"
-                    if os.path.islink(link_path):
-                        logger.info(f"Log 6: Removendo link simbólico {link_path}.")
-                        os.unlink(link_path)                  
-                    logger.info(f"Log 7: Tentando remover o diretório {full_path}.")
-                    result = subprocess.run(['sudo', 'rm', '-rf', full_path], check=True)
-                    logger.info(f"Log 8: Remoção do diretório {full_path} concluída com status: {result.returncode}")              
-                elif os.path.isfile(full_path) or os.path.islink(full_path):
-                    logger.info(f"Log 5: {full_path} é um arquivo ou link simbólico.")
-                    logger.info(f"Log 7: Tentando remover o arquivo/link {full_path}.")
-                    result = subprocess.run(['sudo', 'rm', '-f', full_path], check=True)
-                    logger.info(f"Log 8: Remoção do arquivo/link {full_path} concluída com status: {result.returncode}")          
+                # Remover qualquer tipo de arquivo ou diretório
+                logger.info(f"Log 5: Tentando remover {full_path}.")
+                result = subprocess.run(['sudo', 'rm', '-rf', full_path], check=True)
+                logger.info(f"Log 6: Remoção de {full_path} concluída com status: {result.returncode}")         
             except Exception as e:
                 logger.error(f"Erro ao excluir {full_path}: {str(e)}")
                 errors.append(f"Erro ao excluir {path}: {str(e)}")

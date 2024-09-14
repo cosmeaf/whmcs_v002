@@ -105,11 +105,8 @@
         const deleteFilesUrl = "{% url 'delete_file' %}";
         const csrfToken = '{{ csrf_token }}';
 
+        // Função para deletar os arquivos
         function deleteFile(selectedFiles) {
-            if (!confirm('Tem certeza de que deseja excluir os arquivos selecionados?')) {
-                return;
-            }
-
             fetch(deleteFilesUrl, {
                 method: 'POST',
                 headers: {
@@ -117,7 +114,8 @@
                     'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({ paths: selectedFiles })
-            }).then(response => response.json())
+            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     showAlert('Arquivos deletados com sucesso!', 'success');
@@ -127,11 +125,13 @@
                 } else {
                     showAlert('Falha ao deletar: ' + data.message, 'danger');
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
                 showAlert('Erro: ' + error, 'danger');
                 console.error('Error:', error);
             });
         }
+
     </script>
     <script src="{% static 'linux/js/toggle.js' %}"></script>
     <script src="{% static 'linux/js/upload.js' %}"></script>

@@ -15,28 +15,30 @@ function toggleActionButtons() {
     checkboxes.forEach(checkbox => {
         const filePath = checkbox.getAttribute('data-path');
         selectedFiles.push(filePath);
-        console.log("Checkbox selecionado:", filePath);
     });
 
-    console.log("Arquivos atualmente selecionados:", selectedFiles);
-
-    const hasZipFile = selectedFiles.some(filePath => filePath.endsWith('.zip'));
+    const hasZipFile = selectedFiles.some(filePath => filePath.toLowerCase().endsWith('.zip'));
     const deleteButton = document.getElementById('deleteSelected');
     const unzipButton = document.getElementById('unzipSelected');
 
     deleteButton.style.display = selectedFiles.length > 0 ? 'inline-block' : 'none';
     unzipButton.style.display = hasZipFile ? 'inline-block' : 'none';
 
-    // Certifique-se de que a função 'deleteFiles' é usada corretamente aqui
+    // Usando showConfirm para confirmar a exclusão
     deleteButton.onclick = function() {
-        deleteFiles(selectedFiles);  // O nome correto da função é 'deleteFiles'
+        showConfirm('Tem certeza de que deseja excluir os arquivos selecionados?', function() {
+            deleteFile(selectedFiles);  // Função de callback quando o usuário confirma
+        }, function() {
+            showAlert('Exclusão cancelada!', 'info');
+        });
     };
 
     unzipButton.onclick = function() {
         selectedFiles.forEach(filePath => {
-            if (filePath.endsWith('.zip')) {
+            if (filePath.toLowerCase().endsWith('.zip')) {
                 unzipFile(filePath);
             }
         });
     };
 }
+
