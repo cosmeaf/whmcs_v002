@@ -3,11 +3,11 @@ from django.contrib import admin
 from django.http import HttpResponse
 import csv
 import xlsxwriter
-from support.utils.email_sender import EmailSender
 from django.template.loader import render_to_string
 from django.utils.crypto import get_random_string
 from io import BytesIO
 from xhtml2pdf import pisa
+from linux.tasks import send_email_task  # Importando o novo método de envio de e-mail com Celery
 
 @admin.action(description='Exportar usuários para CSV')
 def export_users_csv(modeladmin, request, queryset):
@@ -62,7 +62,7 @@ def export_users_pdf(modeladmin, request, queryset):
 def send_email_to_users(modeladmin, request, queryset):
     for user in queryset:
         new_password = get_random_string(length=8)
-        user.set_password(new_password) 
+        user.set_password(new_password)
         user.save()
 
         context = {
@@ -73,13 +73,13 @@ def send_email_to_users(modeladmin, request, queryset):
             'password': new_password,
         }
 
-        email_sender = EmailSender(
+        # Usar o método send_email_task do Celery para enviar o e-mail de forma assíncrona
+        send_email_task.delay(
             subject='Bem-vindo ao sistema',
-            to=user.email,
-            template_name='welcome_admin.html',
+            to_email=user.email,
+            template_name='emails/welcome_admin.html',  # Certifique-se de que o template existe
             context=context
         )
-        email_sender.send_email()
 
 
 class CustomUserReport(admin.ModelAdmin):

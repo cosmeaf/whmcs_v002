@@ -1,5 +1,4 @@
 # from .smtp_admin import EmailSettingsAdmin
-from .smtp_task_admin import EmailSettingsAdmin
 from django.contrib import admin
 from django.contrib.auth.models import User
 from support.models.user_manager_model import UserManager

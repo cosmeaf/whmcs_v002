@@ -59,7 +59,6 @@ class UserManagerAdmin(admin.ModelAdmin):
         ]
         return custom_urls + urls
 
-
     def upload_planilha(self, request):
         if request.method == "POST":
             if 'excel_file' in request.FILES:
@@ -115,15 +114,17 @@ class UserManagerAdmin(admin.ModelAdmin):
                         'last_name': last_name,
                     })
 
-                # Chamar a tarefa Celery
-                task = process_user_creation.delay(data)
+                # Dividindo as tarefas em lotes de 100 para evitar sobrecarga
+                batch_size = 100
+                for i in range(0, len(data), batch_size):
+                    batch_data = data[i:i+batch_size]
+                    process_user_creation.delay(batch_data)
 
-                messages.success(request, "A tarefa de criação de usuários foi iniciada. Verifique mais tarde os resultados.")
+                messages.success(request, "A tarefa de criação de usuários foi iniciada em lotes. Verifique mais tarde os resultados.")
                 return redirect('admin:upload_planilha')
             else:
                 messages.error(request, "Por favor, selecione um arquivo Excel.")
         return render(request, "admin/upload_excel.html")
-
 
 
     def adicionar_manual(self, request):
@@ -148,16 +149,6 @@ class UserManagerAdmin(admin.ModelAdmin):
                     password=password,
                 )
 
-                generated_users = request.session.get('generated_users', [])
-                generated_users.append({
-                    'first_name': first_name,
-                    'last_name': last_name,
-                    'username': username,
-                    'email': email,
-                    'password': password
-                })
-                request.session['generated_users'] = generated_users
-
                 messages.success(request, f"Usuário {username} criado com sucesso.")
                 return redirect('admin:upload_planilha')
             else:
@@ -165,7 +156,7 @@ class UserManagerAdmin(admin.ModelAdmin):
                 return redirect('admin:upload_planilha')
 
     def exportar_usuarios(self, request):
-        generated_users = request.session.get('generated_users', [])
+        generated_users = get_user_model().objects.all()
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="generated_users.csv"'
@@ -174,6 +165,6 @@ class UserManagerAdmin(admin.ModelAdmin):
         writer.writerow(['First Name', 'Last Name', 'Username', 'Email', 'Password'])
 
         for user in generated_users:
-            writer.writerow([user['first_name'], user['last_name'], user['username'], user['email'], user['password']])
+            writer.writerow([user.first_name, user.last_name, user.username, user.email, "Senha Oculta"])
 
         return response
